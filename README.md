@@ -8,6 +8,22 @@ Mantiene el contexto de la conversación, comprueba las capacidades disponibles,
 acota las delegaciones y revisa los resultados antes de incorporarlos. No requiere
 claves API, dependencias en ejecución ni un servicio externo.
 
+## Objetivo
+
+> Mejorar la calidad verificable de las tareas mediante la selección y coordinación
+> de los modelos disponibles, delegando solo cuando el beneficio esperado justifique
+> el tiempo y consumo adicionales, dentro de los límites definidos por el usuario.
+
+La calidad es la prioridad predeterminada; el tiempo y el consumo son límites
+ajustables. El usuario puede cambiar esa prioridad. El protocolo parte del resultado
+buscado y sus criterios de aceptación, decide si conviene delegar, asigna las
+subtareas y verifica el resultado conjunto.
+
+El éxito se evalúa frente al comportamiento nativo sin el plugin: mejor calidad
+con un incremento aceptable de recursos, o calidad equivalente con menos recursos.
+Hasta medirlo, la mejora es una hipótesis. Consulta el
+[objetivo y sus criterios de éxito](docs/objetivo.md).
+
 ## Uso
 
 Después de instalarlo, pide:
@@ -16,8 +32,9 @@ Después de instalarlo, pide:
 > solo las comprobaciones que aporten valor.
 
 También puedes indicar «prioriza coste», «prioriza rapidez» o un límite concreto
-de delegaciones. El perfil predeterminado es equilibrado: hasta dos llamadas a
-especialistas, una activa a la vez y sin delegación recursiva. No consume esas
+de delegaciones. Por defecto se prioriza la calidad, con un presupuesto provisional
+de hasta dos llamadas a especialistas, una activa a la vez y sin delegación
+recursiva. Este límite es ajustable y no se presenta como óptimo. No consume esas
 llamadas si la tarea puede resolverse directamente.
 
 ## Compatibilidad real
@@ -119,7 +136,7 @@ desarrollo, los tests ni el archivo histórico del skill original.
 - [Subagentes de Claude Code](https://code.claude.com/docs/en/sub-agents).
 - [Agent Skills](https://agentskills.io/specification).
 
-La versión 1.0.0 es un protocolo de instrucciones, no un router de inferencia por
+La versión 1.1.0 es un protocolo de instrucciones, no un router de inferencia por
 API. Usa la delegación del host y conserva una ejecución útil cuando no existe.
 
 ## Colaboradores

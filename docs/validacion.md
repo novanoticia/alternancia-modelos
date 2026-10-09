@@ -1,4 +1,17 @@
-# Validación de v1.0.0
+# Validación
+
+## v1.1.0 — objetivo y prioridad de calidad
+
+Comprobaciones realizadas el 2026-10-09:
+
+- Validador local, cinco pruebas y generación de ambos ZIP: correctos.
+- Claude Code 2.1.295: manifiesto del plugin y marketplace aceptados sin advertencias.
+- Revisión documental: objetivo, prioridad predeterminada y presupuesto provisional
+  coherentes entre README, skill y documento de objetivo.
+- Evaluación comparativa con modelos: pendiente; el procedimiento está descrito
+  en `evals/README.md`. No se ha medido una mejora frente al host sin plugin.
+
+## v1.0.0 — primera versión
 
 Comprobaciones realizadas el 2026-10-09:
 
