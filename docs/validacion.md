@@ -1,5 +1,26 @@
 # Validación
 
+## v1.2.0 — mejoras de la auditoría
+
+Comprobaciones locales realizadas el 2026-10-09 sobre la base `93b9073`:
+
+- 29 pruebas correctas: 12 de validación/empaquetado y 17 del comparador.
+- Casos defectuosos reproducidos antes de corregir: nombre de skill discordante,
+  YAML inválido, ausencia del especialista y excepción con versión numérica.
+- Pruebas de conservación de archivos externos ante destinos con enlaces simbólicos
+  y conservación de artefactos previos cuando falla la generación del segundo ZIP.
+- Comparador probado con datos sintéticos: medidas ausentes, condiciones distintas,
+  pérdida de calidad, presupuestos, monedas y fallos de requisitos.
+
+La sustitución de cada archivo de salida es atómica, pero el conjunto de los dos
+ZIP y sus sumas no constituye una transacción indivisible. No ejecutes builds
+concurrentes sobre el mismo directorio de salida.
+
+No se han ejecutado evaluaciones reales con modelos; las 29 pruebas validan las
+herramientas de desarrollo y comparación, no la eficacia del protocolo. La
+validación de dependencia por un escáner externo no se ha ejecutado. La instalación
+en clientes concretos y la alternancia real siguen requiriendo aceptación en el host.
+
 ## v1.1.0 — objetivo y prioridad de calidad
 
 Comprobaciones realizadas el 2026-10-09:
@@ -30,8 +51,8 @@ acredita ni un fallo del paquete ni su aceptación por el cargador de Codex.
 ## Comprobaciones automatizadas
 
 `python scripts/validate.py` comprueba la estructura del paquete, identidad y
-versiones de manifiestos, destinos del marketplace, referencias locales del skill
-y ausencia de enlaces simbólicos en el contenido distribuido. Es una validación
+versiones de manifiestos, frontmatter YAML, destinos del marketplace, referencias
+locales del skill y ausencia de enlaces simbólicos en el contenido distribuido. Es una validación
 del contrato usado por este proyecto, no un sustituto de todos los validadores
 oficiales ni una prueba de comportamiento de los modelos.
 

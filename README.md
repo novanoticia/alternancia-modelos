@@ -24,6 +24,10 @@ con un incremento aceptable de recursos, o calidad equivalente con menos recurso
 Hasta medirlo, la mejora es una hipótesis. Consulta el
 [objetivo y sus criterios de éxito](docs/objetivo.md).
 
+Para registrar comparaciones, usa el [comparador local](evals/record-format.md).
+Rechaza condiciones incompatibles y distingue mediciones ausentes de valores cero;
+los ejemplos incluidos son sintéticos y no acreditan mejoras reales.
+
 ## Uso
 
 Después de instalarlo, pide:
@@ -117,12 +121,15 @@ Consulta [los cambios respecto al original](docs/origen.md),
 
 ## Desarrollo y empaquetado
 
-Requiere Python 3.10 o posterior; el plugin en sí no necesita Python.
+Requiere Python 3.10 o posterior y PyYAML para validar el frontmatter; el plugin
+instalado no necesita Python ni PyYAML.
 
 ```sh
+python -m pip install -r requirements-dev.txt
 python scripts/validate.py
 python -m unittest discover -s tests -v
 python scripts/build.py
+python scripts/compare_evals.py evals/examples/synthetic-pair.json
 ```
 
 Se generan en `dist/` dos ZIP reproducibles: el plugin completo y el skill
@@ -136,7 +143,7 @@ desarrollo, los tests ni el archivo histórico del skill original.
 - [Subagentes de Claude Code](https://code.claude.com/docs/en/sub-agents).
 - [Agent Skills](https://agentskills.io/specification).
 
-La versión 1.1.0 es un protocolo de instrucciones, no un router de inferencia por
+La versión 1.2.0 es un protocolo de instrucciones, no un router de inferencia por
 API. Usa la delegación del host y conserva una ejecución útil cuando no existe.
 
 ## Colaboradores

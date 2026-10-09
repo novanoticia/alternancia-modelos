@@ -1,5 +1,15 @@
 # Escenarios de aceptación del protocolo
 
+El repositorio incluye un [formato de registro y comparador local](record-format.md)
+para aplicar los criterios de éxito a pares de observaciones:
+
+```sh
+python scripts/compare_evals.py evals/examples/synthetic-pair.json
+```
+
+El archivo de ejemplo es sintético. La herramienta no llama a modelos ni demuestra
+una mejora empírica; clasifica datos aportados y conserva sus límites de interpretación.
+
 Estos son casos para evaluación en el host, no resultados de pruebas ejecutadas
 contra modelos. Evalúa llamadas observables y el resultado final; no cadenas de
 pensamiento. Usa herramientas simuladas para errores y presupuestos, sin provocar

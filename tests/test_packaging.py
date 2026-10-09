@@ -5,6 +5,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,6 +70,79 @@ class PackagingTests(unittest.TestCase):
     def test_output_cannot_pollute_plugin(self):
         with self.assertRaisesRegex(ValueError, "outside the plugin"):
             build(self.root, self.root / PLUGIN / "dist")
+
+    def test_invalid_frontmatter_blocks_distribution(self):
+        path = self.root / PLUGIN / "skills" / NAME / "SKILL.md"
+        original = path.read_text()
+        for replacement in (
+            "name: different-name",
+            "name: alternancia-modelos\nbroken: [unterminated",
+            "name: alternancia-modelos\nname: alternancia-modelos",
+            "name: alternancia-modelos\nunsupported: !!python/object:builtins.object {}",
+        ):
+            with self.subTest(replacement=replacement):
+                path.write_text(original.replace("name: alternancia-modelos", replacement))
+                with self.assertRaises(ValueError):
+                    build(self.root)
+
+    def test_invalid_description_type_is_rejected(self):
+        path = self.root / PLUGIN / "skills" / NAME / "SKILL.md"
+        path.write_text("---\nname: alternancia-modelos\ndescription: [not, a, string]\n---\nText\n")
+        self.assertTrue(any("description" in error for error in validate(self.root)))
+
+    def test_numeric_version_returns_error_without_crashing(self):
+        path = self.root / PLUGIN / "plugin.json"
+        data = json.loads(path.read_text())
+        data["version"] = 1
+        path.write_text(json.dumps(data))
+        self.assertTrue(any("Invalid release version" in error for error in validate(self.root)))
+
+    def test_missing_specialist_blocks_distribution(self):
+        (self.root / PLUGIN / "agents" / "especialista.md").unlink()
+        self.assertIn("Required specialist agent missing", validate(self.root))
+
+    def test_duplicate_json_fields_are_rejected(self):
+        path = self.root / PLUGIN / "plugin.json"
+        path.write_text(path.read_text().replace('"version": "', '"name": "hidden", "version": "', 1))
+        self.assertTrue(any("Duplicate key" in error for error in validate(self.root)))
+
+    def test_output_symlinks_do_not_overwrite_external_files(self):
+        artifacts = build(self.root)
+        outside = Path(self.temp.name) / "outside.txt"
+        outside.write_text("preserve me")
+        for target in [*artifacts, artifacts[0].parent / "SHA256SUMS"]:
+            with self.subTest(target=target.name):
+                data = target.read_bytes()
+                target.unlink()
+                target.symlink_to(outside)
+                try:
+                    with self.assertRaisesRegex(ValueError, "Unsafe output target"):
+                        build(self.root)
+                    self.assertEqual(outside.read_text(), "preserve me")
+                finally:
+                    target.unlink()
+                    target.write_bytes(data)
+
+    def test_generation_failure_preserves_previous_release(self):
+        import build as builder
+        artifacts = build(self.root)
+        targets = [*artifacts, artifacts[0].parent / "SHA256SUMS"]
+        before = {path: path.read_bytes() for path in targets}
+        real_write = builder.write_archive
+        calls = 0
+
+        def fail_second(source, destination):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise OSError("simulated disk failure")
+            real_write(source, destination)
+
+        with patch.object(builder, "write_archive", side_effect=fail_second):
+            with self.assertRaisesRegex(OSError, "simulated disk failure"):
+                build(self.root)
+        self.assertEqual(before, {path: path.read_bytes() for path in targets})
+        self.assertEqual(list(artifacts[0].parent.glob(".alternancia-build-*")), [])
 
 
 if __name__ == "__main__":

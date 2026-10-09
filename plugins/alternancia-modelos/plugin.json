@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "alternancia-modelos",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Orquestación de modelos por roles: delegación selectiva, continuidad, verificación y registro de uso real.",
   "author": { "name": "novanoticia" },
   "repository": "https://github.com/novanoticia/alternancia-modelos",

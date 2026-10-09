@@ -1,0 +1,2 @@
+# Build and validation only. Installed plugins have no Python dependency.
+PyYAML==6.0.3
