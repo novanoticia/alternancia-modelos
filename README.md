@@ -121,3 +121,10 @@ desarrollo, los tests ni el archivo histórico del skill original.
 
 La versión 1.0.0 es un protocolo de instrucciones, no un router de inferencia por
 API. Usa la delegación del host y conserva una ejecución útil cuando no existe.
+
+## Colaboradores
+
+- **[novanoticia](https://github.com/novanoticia):** iniciativa, dirección del proyecto
+  y aportación del skill original de Claude.
+- **OpenAI Codex:** contribución asistida por IA a la adaptación multiplataforma,
+  implementación, documentación, pruebas y preparación de la publicación.
