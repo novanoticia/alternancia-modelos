@@ -1,14 +1,48 @@
 #!/usr/bin/env python3
-"""Validate this repository's packaging contract using only the standard library."""
+"""Validate plugin metadata, YAML frontmatter and distribution boundaries."""
 
 import json
 from pathlib import Path
 import re
 import sys
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 NAME = "alternancia-modelos"
 PLUGIN = Path("plugins") / NAME
+
+
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"Duplicate key: {key}")
+        result[key] = value
+    return result
+
+
+class UniqueSafeLoader(yaml.SafeLoader):
+    """Safe YAML with duplicate keys rejected instead of silently overwritten."""
+
+
+def yaml_mapping(loader, node):
+    return unique_object((loader.construct_object(key), loader.construct_object(value))
+                         for key, value in node.value)
+
+
+UniqueSafeLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, yaml_mapping)
+
+
+def frontmatter(text):
+    lines = text.splitlines()
+    if not lines or lines[0] != "---" or "---" not in lines[1:]:
+        raise ValueError("Missing frontmatter delimiters")
+    end = lines.index("---", 1)
+    data = yaml.load("\n".join(lines[1:end]), Loader=UniqueSafeLoader)
+    if not isinstance(data, dict):
+        raise ValueError("Frontmatter must be a mapping")
+    return data
 
 
 def package_files(directory):
@@ -33,13 +67,16 @@ def validate(root=ROOT):
     plugin = root / PLUGIN
     errors = []
 
+    if (root / "plugins").is_symlink() or not plugin.resolve().is_relative_to(root):
+        return ["Plugin directory must stay inside the repository without symbolic links"]
+
     def check(condition, message):
         if not condition:
             errors.append(message)
 
     def read_json(path):
         try:
-            data = json.loads(path.read_text(encoding="utf-8"))
+            data = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=unique_object)
             if not isinstance(data, dict):
                 raise ValueError("expected JSON object")
             return data
@@ -56,11 +93,13 @@ def validate(root=ROOT):
         "plugin.json", ".claude-plugin/plugin.json", ".codex-plugin/plugin.json"
     )]
     version = manifests[0].get("version", "")
-    check(bool(re.fullmatch(r"\d+\.\d+\.\d+", version)), "Invalid release version")
+    check(isinstance(version, str) and bool(re.fullmatch(r"\d+\.\d+\.\d+", version)),
+          "Invalid release version: expected a string such as 1.2.0")
     for manifest in manifests:
         check(manifest.get("name") == NAME, "Manifest name mismatch")
         check(manifest.get("version") == version, "Manifest version mismatch")
-        check(bool(manifest.get("description")), "Manifest description missing")
+        check(isinstance(manifest.get("description"), str) and bool(manifest["description"].strip()),
+              "Manifest description must be a nonempty string")
     check(manifests[0].get("$schema") ==
           "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
           "Portable schema missing")
@@ -88,21 +127,31 @@ def validate(root=ROOT):
             check(entry.get("version") == version, "Marketplace version mismatch")
 
     skill = plugin / "skills" / NAME / "SKILL.md"
+    agent = plugin / "agents" / "especialista.md"
     if not skill.is_file():
         errors.append("SKILL.md missing")
+    check(agent.is_file(), "Required specialist agent missing")
     for path in files:
         if path.suffix == ".json":
             read_json(path)
             continue
-        text = path.read_text(encoding="utf-8")
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as error:
+            errors.append(f"Cannot read {path.relative_to(root)}: {error}")
+            continue
         if path == skill or path.parent.name == "agents":
-            sections = text.split("---", 2)
-            check(text.startswith("---\n") and len(sections) == 3,
-                  f"Frontmatter missing: {path.name}")
-            if len(sections) == 3:
-                check(bool(re.search(r"^name: [a-z0-9-]+$", sections[1], re.M)),
-                      f"Frontmatter name missing: {path.name}")
-                check("\ndescription: " in sections[1], f"Description missing: {path.name}")
+            try:
+                data = frontmatter(text)
+                expected_name = NAME if path == skill else path.stem
+                check(data.get("name") == expected_name, f"Frontmatter name mismatch: {path.name}")
+                description = data.get("description")
+                check(isinstance(description, str) and 0 < len(description.strip()) <= 1024,
+                      f"Invalid frontmatter description: {path.name}")
+                if path == agent:
+                    check(data.get("model") == "inherit", "Specialist must default to inherit")
+            except (yaml.YAMLError, ValueError, TypeError) as error:
+                errors.append(f"Invalid frontmatter in {path.name}: {error}")
         for target in re.findall(r"\]\(([^\s)]+)\)", text):
             if target.startswith(("https://", "http://", "#")):
                 continue

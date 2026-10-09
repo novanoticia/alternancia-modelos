@@ -70,6 +70,41 @@ class PackagingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "outside the plugin"):
             build(self.root, self.root / PLUGIN / "dist")
 
+    def test_invalid_frontmatter_blocks_distribution(self):
+        path = self.root / PLUGIN / "skills" / NAME / "SKILL.md"
+        original = path.read_text()
+        for replacement in (
+            "name: different-name",
+            "name: alternancia-modelos\nbroken: [unterminated",
+            "name: alternancia-modelos\nname: alternancia-modelos",
+            "name: alternancia-modelos\nunsupported: !!python/object:builtins.object {}",
+        ):
+            with self.subTest(replacement=replacement):
+                path.write_text(original.replace("name: alternancia-modelos", replacement))
+                with self.assertRaises(ValueError):
+                    build(self.root)
+
+    def test_invalid_description_type_is_rejected(self):
+        path = self.root / PLUGIN / "skills" / NAME / "SKILL.md"
+        path.write_text("---\nname: alternancia-modelos\ndescription: [not, a, string]\n---\nText\n")
+        self.assertTrue(any("description" in error for error in validate(self.root)))
+
+    def test_numeric_version_returns_error_without_crashing(self):
+        path = self.root / PLUGIN / "plugin.json"
+        data = json.loads(path.read_text())
+        data["version"] = 1
+        path.write_text(json.dumps(data))
+        self.assertTrue(any("Invalid release version" in error for error in validate(self.root)))
+
+    def test_missing_specialist_blocks_distribution(self):
+        (self.root / PLUGIN / "agents" / "especialista.md").unlink()
+        self.assertIn("Required specialist agent missing", validate(self.root))
+
+    def test_duplicate_json_fields_are_rejected(self):
+        path = self.root / PLUGIN / "plugin.json"
+        path.write_text(path.read_text().replace('"version": "', '"name": "hidden", "version": "', 1))
+        self.assertTrue(any("Duplicate key" in error for error in validate(self.root)))
+
 
 if __name__ == "__main__":
     unittest.main()

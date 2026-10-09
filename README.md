@@ -117,9 +117,11 @@ Consulta [los cambios respecto al original](docs/origen.md),
 
 ## Desarrollo y empaquetado
 
-Requiere Python 3.10 o posterior; el plugin en sí no necesita Python.
+Requiere Python 3.10 o posterior y PyYAML para validar el frontmatter; el plugin
+instalado no necesita Python ni PyYAML.
 
 ```sh
+python -m pip install -r requirements-dev.txt
 python scripts/validate.py
 python -m unittest discover -s tests -v
 python scripts/build.py
