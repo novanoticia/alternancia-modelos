@@ -1,0 +1,12 @@
+{
+  "name": "alternancia-modelos-marketplace",
+  "interface": { "displayName": "Alternancia de modelos" },
+  "plugins": [
+    {
+      "name": "alternancia-modelos",
+      "source": { "source": "local", "path": "./plugins/alternancia-modelos" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "alternancia-modelos-marketplace",
+  "owner": { "name": "novanoticia" },
+  "metadata": { "description": "Plugin de alternancia de modelos con delegación selectiva y verificación." },
+  "plugins": [
+    {
+      "name": "alternancia-modelos",
+      "source": "./plugins/alternancia-modelos",
+      "description": "Alternancia de modelos por roles, sin dependencias externas.",
+      "version": "1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "alternancia-modelos",
+  "version": "1.0.0",
+  "description": "Orquestación de modelos por roles con delegación selectiva, continuidad y verificación.",
+  "author": { "name": "novanoticia" },
+  "repository": "https://github.com/novanoticia/alternancia-modelos"
+}

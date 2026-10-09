@@ -1,0 +1,17 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "alternancia-modelos",
+  "version": "1.0.0",
+  "description": "Orquestación de modelos por roles: delegación selectiva, continuidad, verificación y registro de uso real.",
+  "author": { "name": "novanoticia" },
+  "repository": "https://github.com/novanoticia/alternancia-modelos",
+  "keywords": ["orchestration", "multi-model", "skills", "claude", "codex"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Alternancia de modelos",
+        "shortDescription": "Delega cuando aporta valor y verifica el resultado"
+      }
+    }
+  }
+}
