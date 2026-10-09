@@ -1,5 +1,16 @@
 # Cambios
 
+## 1.2.0 — 2026-10-09
+
+- QW1: validación YAML segura, claves duplicadas rechazadas, identidad del skill y
+  presencia del especialista verificadas; versiones inválidas producen errores legibles.
+- QW2: generación temporal de artefactos y rechazo de destinos con enlaces simbólicos;
+  una generación fallida conserva los ZIP anteriores.
+- CM1: comparador local de pares nativo/plugin con umbrales previos, condiciones
+  equivalentes, presupuestos, monedas y valores desconocidos explícitos.
+- 29 pruebas automatizadas; ejemplos de evaluación identificados como sintéticos.
+- PyYAML 6.0.3 como dependencia de desarrollo; el plugin instalado sigue sin requerir Python.
+
 ## 1.1.0 — 2026-10-09
 
 - Objetivo explícito: mejorar calidad verificable justificando tiempo y consumo.

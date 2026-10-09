@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "synthetic": true,
+  "experiment_id": "example-only",
+  "task_id": "fictional-review",
+  "pair_id": "pair-1",
+  "policy": {
+    "min_quality_gain": 5,
+    "equivalence_margin": 2,
+    "max_time_increase_pct": 25,
+    "max_resource_increase_pct": 20,
+    "resource_metric": "tokens",
+    "currency": null,
+    "time_limit_seconds": 180,
+    "resource_limit": 1500
+  },
+  "runs": {
+    "native": {
+      "setup": {
+        "host": "fixture-host/version-1",
+        "primary_model": "fixture-primary",
+        "effort": "fixture-effort",
+        "context_id": "fixture-context-v1",
+        "available_models": ["fixture-primary", "fixture-specialist"],
+        "tools": ["fixture-read"],
+        "rubric_id": "fixture-rubric-v1",
+        "budget_id": "fixture-budget-v1",
+        "native_delegation_allowed": true
+      },
+      "completed": true,
+      "requirements_met": true,
+      "quality": 80,
+      "wall_seconds": 100,
+      "tokens": 1000,
+      "cost": null,
+      "currency": null,
+      "calls": 1,
+      "models_observed": ["fixture-primary"],
+      "evidence": ["synthetic fixture: not an actual model execution"]
+    },
+    "plugin": {
+      "setup": {
+        "host": "fixture-host/version-1",
+        "primary_model": "fixture-primary",
+        "effort": "fixture-effort",
+        "context_id": "fixture-context-v1",
+        "available_models": ["fixture-primary", "fixture-specialist"],
+        "tools": ["fixture-read"],
+        "rubric_id": "fixture-rubric-v1",
+        "budget_id": "fixture-budget-v1",
+        "native_delegation_allowed": true
+      },
+      "completed": true,
+      "requirements_met": true,
+      "quality": 90,
+      "wall_seconds": 110,
+      "tokens": 1100,
+      "cost": null,
+      "currency": null,
+      "calls": 2,
+      "models_observed": ["fixture-primary", "fixture-specialist"],
+      "evidence": ["synthetic fixture: not an actual model execution"]
+    }
+  }
+}
