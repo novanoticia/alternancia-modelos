@@ -5,6 +5,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -104,6 +105,44 @@ class PackagingTests(unittest.TestCase):
         path = self.root / PLUGIN / "plugin.json"
         path.write_text(path.read_text().replace('"version": "', '"name": "hidden", "version": "', 1))
         self.assertTrue(any("Duplicate key" in error for error in validate(self.root)))
+
+    def test_output_symlinks_do_not_overwrite_external_files(self):
+        artifacts = build(self.root)
+        outside = Path(self.temp.name) / "outside.txt"
+        outside.write_text("preserve me")
+        for target in [*artifacts, artifacts[0].parent / "SHA256SUMS"]:
+            with self.subTest(target=target.name):
+                data = target.read_bytes()
+                target.unlink()
+                target.symlink_to(outside)
+                try:
+                    with self.assertRaisesRegex(ValueError, "Unsafe output target"):
+                        build(self.root)
+                    self.assertEqual(outside.read_text(), "preserve me")
+                finally:
+                    target.unlink()
+                    target.write_bytes(data)
+
+    def test_generation_failure_preserves_previous_release(self):
+        import build as builder
+        artifacts = build(self.root)
+        targets = [*artifacts, artifacts[0].parent / "SHA256SUMS"]
+        before = {path: path.read_bytes() for path in targets}
+        real_write = builder.write_archive
+        calls = 0
+
+        def fail_second(source, destination):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise OSError("simulated disk failure")
+            real_write(source, destination)
+
+        with patch.object(builder, "write_archive", side_effect=fail_second):
+            with self.assertRaisesRegex(OSError, "simulated disk failure"):
+                build(self.root)
+        self.assertEqual(before, {path: path.read_bytes() for path in targets})
+        self.assertEqual(list(artifacts[0].parent.glob(".alternancia-build-*")), [])
 
 
 if __name__ == "__main__":
