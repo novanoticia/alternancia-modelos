@@ -1,7 +1,7 @@
 # Alternancia de modelos
 
 [![Versión en main](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fnovanoticia%2Falternancia-modelos%2Fmain%2Fplugins%2Falternancia-modelos%2Fplugin.json&query=%24.version&prefix=v&label=Versi%C3%B3n%20en%20main&color=blue)](https://github.com/novanoticia/alternancia-modelos/blob/main/plugins/alternancia-modelos/plugin.json)
-**Última versión publicada:** Sin releases publicadas · [Ver publicaciones](https://github.com/novanoticia/alternancia-modelos/releases)
+[![Última versión publicada](https://img.shields.io/github/v/release/novanoticia/alternancia-modelos?display_name=tag&label=%C3%9Altima%20versi%C3%B3n%20publicada&color=green)](https://github.com/novanoticia/alternancia-modelos/releases/latest)
 
 Plugin portable para ejecutar tareas con un modelo principal y delegar subtareas
 a otros modelos **cuando aportan valor y el entorno lo permite**. Basado en el
