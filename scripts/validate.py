@@ -56,7 +56,8 @@ def package_files(directory):
             raise ValueError(f"Symbolic links are not distributed: {path}")
         if path.is_dir():
             continue
-        if not path.is_file() or path.suffix not in {".md", ".json"}:
+        is_icon = path.relative_to(directory).as_posix() == ".claude-plugin/icon.png"
+        if not path.is_file() or (path.suffix not in {".md", ".json"} and not is_icon):
             raise ValueError(f"Unexpected package file: {path}")
         files.append(path)
     return files
@@ -132,6 +133,8 @@ def validate(root=ROOT):
         errors.append("SKILL.md missing")
     check(agent.is_file(), "Required specialist agent missing")
     for path in files:
+        if path == plugin / ".claude-plugin" / "icon.png":
+            continue
         if path.suffix == ".json":
             read_json(path)
             continue
