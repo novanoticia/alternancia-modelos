@@ -10,5 +10,13 @@
   "documentationUrl": "https://github.com/novanoticia/alternancia-modelos/blob/main/README.md",
   "supportUrl": "https://github.com/novanoticia/alternancia-modelos/issues",
   "privacyPolicyUrl": "https://github.com/novanoticia/alternancia-modelos/blob/main/PRIVACY.md",
-  "termsOfServiceUrl": "https://github.com/novanoticia/alternancia-modelos/blob/main/TERMS.md"
+  "termsOfServiceUrl": "https://github.com/novanoticia/alternancia-modelos/blob/main/TERMS.md",
+  "displayName": "Alternancia de modelos",
+  "keywords": [
+    "orquestación",
+    "modelos de IA",
+    "subagentes",
+    "delegación",
+    "productividad"
+  ]
 }
