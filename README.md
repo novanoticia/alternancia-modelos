@@ -11,25 +11,20 @@ Mantiene el contexto de la conversación, comprueba las capacidades disponibles,
 acota las delegaciones y revisa los resultados antes de incorporarlos. No requiere
 claves API, dependencias en ejecución ni un servicio externo.
 
-## Objetivo
+**En esta página:**
+[Inicio rápido](#inicio-rápido) · [Uso](#uso) · [Compatibilidad](#compatibilidad-real) · [Instalación: Claude Code](#instalación-en-claude-code) · [Codex](#instalación-en-codex) · [ChatGPT](#instalación-en-chatgpt) · [Otros clientes](#skill-independiente-y-otros-clientes) · [Objetivo](#objetivo) · [Desarrollo](#desarrollo-y-empaquetado)
 
-> Mejorar la calidad verificable de las tareas mediante la selección y coordinación
-> de los modelos disponibles, delegando solo cuando el beneficio esperado justifique
-> el tiempo y consumo adicionales, dentro de los límites definidos por el usuario.
+## Inicio rápido
 
-La calidad es la prioridad predeterminada; el tiempo y el consumo son límites
-ajustables. El usuario puede cambiar esa prioridad. El protocolo parte del resultado
-buscado y sus criterios de aceptación, decide si conviene delegar, asigna las
-subtareas y verifica el resultado conjunto.
+1. **Instálalo** en Claude Code (otras plataformas, más abajo):
 
-El éxito se evalúa frente al comportamiento nativo sin el plugin: mejor calidad
-con un incremento aceptable de recursos, o calidad equivalente con menos recursos.
-Hasta medirlo, la mejora es una hipótesis. Consulta el
-[objetivo y sus criterios de éxito](docs/objetivo.md).
+   ```text
+   /plugin marketplace add novanoticia/alternancia-modelos
+   /plugin install alternancia-modelos@alternancia-modelos-marketplace
+   ```
 
-Para registrar comparaciones, usa el [comparador local](evals/record-format.md).
-Rechaza condiciones incompatibles y distingue mediciones ausentes de valores cero;
-los ejemplos incluidos son sintéticos y no acreditan mejoras reales.
+2. **Pídele una tarea**: «Usa alternancia de modelos para revisar este proyecto. Prioriza calidad».
+3. **Revisa el resultado.** Si el entorno no permite delegar, la tarea se hace igual con el modelo actual.
 
 ## Uso
 
@@ -107,6 +102,26 @@ La carpeta `plugins/alternancia-modelos/skills/alternancia-modelos/` contiene un
 skill autónomo. Copia **toda la carpeta**, incluidas sus referencias, al directorio
 de skills que indique tu cliente. El ZIP de skill se genera con el comando de
 empaquetado que aparece abajo y puede importarse donde se admitan ZIP de skills.
+
+## Objetivo
+
+> Mejorar la calidad verificable de las tareas mediante la selección y coordinación
+> de los modelos disponibles, delegando solo cuando el beneficio esperado justifique
+> el tiempo y consumo adicionales, dentro de los límites definidos por el usuario.
+
+La calidad es la prioridad predeterminada; el tiempo y el consumo son límites
+ajustables. El usuario puede cambiar esa prioridad. El protocolo parte del resultado
+buscado y sus criterios de aceptación, decide si conviene delegar, asigna las
+subtareas y verifica el resultado conjunto.
+
+El éxito se evalúa frente al comportamiento nativo sin el plugin: mejor calidad
+con un incremento aceptable de recursos, o calidad equivalente con menos recursos.
+Hasta medirlo, la mejora es una hipótesis. Consulta el
+[objetivo y sus criterios de éxito](docs/objetivo.md).
+
+Para registrar comparaciones, usa el [comparador local](evals/record-format.md).
+Rechaza condiciones incompatibles y distingue mediciones ausentes de valores cero;
+los ejemplos incluidos son sintéticos y no acreditan mejoras reales.
 
 ## Diseño
 
